@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N Arutkeerthi — Applied ML / Signal Processing / Physics</title>
+<meta name="description" content="Arutkeerthi Nagarajan — Applied ML practitioner, gravitational-wave & radio astronomy researcher, IoT and generative AI systems builder. Available for freelance work.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0e14;
+    --surface: #10141d;
+    --surface-2: #161b26;
+    --border: #232a3a;
+    --border-soft: #1a2030;
+    --text: #e8eaed;
+    --text-muted: #8b93a7;
+    --text-dim: #5b6379;
+    --amber: #f5a623;
+    --cyan: #4fd8eb;
+    --amber-dim: rgba(245,166,35,0.12);
+    --cyan-dim: rgba(79,216,235,0.10);
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, sans-serif;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html{ scroll-behavior:smooth; }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+  }
+
+  body{
+    background:
+      linear-gradient(180deg, rgba(79,216,235,0.02), transparent 400px),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 48px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 48px),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.6;
+    font-weight:400;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ color:inherit; }
+  ::selection{ background:var(--amber); color:#0a0e14; }
+
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--cyan);
+    outline-offset:3px;
+    border-radius:2px;
+  }
+
+  .wrap{ max-width:1080px; margin:0 auto; padding:0 28px; }
+
+  /* ---------- NAV ---------- */
+  header.nav{
+    position:sticky; top:0; z-index:50;
+    backdrop-filter:blur(10px);
+    background:rgba(10,14,20,0.82);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .nav-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 28px; max-width:1080px; margin:0 auto;
+  }
+  .nav-mark{
+    font-family:var(--mono); font-weight:600; font-size:14px;
+    letter-spacing:0.06em; color:var(--text);
+    display:flex; align-items:center; gap:8px;
+  }
+  .nav-mark .dot{ width:7px; height:7px; border-radius:50%; background:var(--amber); box-shadow:0 0 8px var(--amber); }
+  .nav-links{ display:flex; gap:28px; list-style:none; font-family:var(--mono); font-size:12.5px; letter-spacing:0.04em; }
+  .nav-links a{ color:var(--text-muted); text-decoration:none; text-transform:uppercase; transition:color .2s; }
+  .nav-links a:hover{ color:var(--cyan); }
+  .nav-status{
+    display:flex; align-items:center; gap:6px;
+    font-family:var(--mono); font-size:11px; color:var(--text-muted);
+    border:1px solid var(--border); padding:5px 10px; border-radius:20px;
+  }
+  .nav-status .pulse{
+    width:6px;height:6px;border-radius:50%;background:#3ddc84;
+    box-shadow:0 0 6px #3ddc84;
+    animation:pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.35} }
+  @media (max-width:720px){ .nav-links{ display:none; } }
+
+  /* ---------- HERO ---------- */
+  .hero{ padding:88px 0 60px; position:relative; overflow:hidden; }
+  .starfield{ position:absolute; inset:-20px; z-index:0; pointer-events:none; overflow:hidden; }
+  .starfield .star{
+    position:absolute; width:2px; height:2px; border-radius:50%;
+    background:#fff; animation:twinkle ease-in-out infinite;
+  }
+  @keyframes twinkle{ 0%,100%{opacity:.12} 50%{opacity:.85} }
+  .hero > *{ position:relative; z-index:1; }
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--amber); margin-bottom:22px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{ content:''; width:22px; height:1px; background:var(--amber); }
+
+  h1.title{
+    font-family:var(--mono); font-weight:700;
+    font-size:clamp(34px, 6vw, 64px);
+    line-height:1.06; letter-spacing:-0.01em;
+    color:var(--text); max-width:14ch;
+  }
+  h1.title .last{ color:var(--text-muted); }
+
+  .hero-tagline{
+    margin-top:22px; font-size:19px; color:var(--text-muted);
+    max-width:56ch; font-weight:300;
+  }
+  .hero-tagline strong{ color:var(--text); font-weight:500; }
+
+  .chirp-wrap{ margin:40px 0 8px; }
+  .chirp-wrap svg{ width:100%; height:auto; display:block; }
+  .chirp-caption{
+    font-family:var(--mono); font-size:11px; color:var(--text-dim);
+    margin-top:8px; letter-spacing:0.03em;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;
+  }
+
+  .hero-cta{ display:flex; gap:14px; margin-top:34px; flex-wrap:wrap; }
+  .btn{
+    font-family:var(--mono); font-size:13px; letter-spacing:0.02em;
+    padding:13px 22px; border-radius:4px; text-decoration:none;
+    display:inline-flex; align-items:center; gap:8px;
+    transition:transform .15s ease, border-color .15s ease, background .15s ease;
+    border:1px solid transparent;
+  }
+  .btn-primary{ background:var(--amber); color:#0a0e14; font-weight:600; }
+  .btn-primary:hover{ transform:translateY(-2px); background:#ffb43d; }
+  .btn-ghost{ border-color:var(--border); color:var(--text); }
+  .btn-ghost:hover{ border-color:var(--cyan); color:var(--cyan); transform:translateY(-2px); }
+
+  /* ---------- SECTION SHARED ---------- */
+  section{ padding:64px 0; border-top:1px solid var(--border-soft); }
+  .sec-head{ display:flex; align-items:baseline; gap:16px; margin-bottom:38px; flex-wrap:wrap; }
+  .sec-num{ font-family:var(--mono); font-size:12px; color:var(--text-dim); }
+  .sec-title{ font-family:var(--mono); font-size:26px; font-weight:600; color:var(--text); }
+  .sec-title .muted{ color:var(--text-dim); font-weight:400; }
+  .sec-sub{ font-family:var(--mono); font-size:12px; color:var(--text-dim); margin-left:auto; text-align:right; }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{ display:grid; grid-template-columns:1.4fr 1fr; gap:48px; }
+  @media (max-width:800px){ .about-grid{ grid-template-columns:1fr; } }
+  .about-text p{ color:var(--text-muted); font-size:16px; margin-bottom:16px; max-width:62ch; }
+  .about-text strong{ color:var(--text); font-weight:500; }
+  .interest-list{ display:flex; flex-wrap:wrap; gap:8px; margin-top:22px; }
+  .chip{
+    font-family:var(--mono); font-size:11.5px; color:var(--cyan);
+    border:1px solid rgba(79,216,235,0.28); background:var(--cyan-dim);
+    padding:6px 12px; border-radius:20px; letter-spacing:0.02em;
+  }
+  .about-meta{ border-left:1px solid var(--border); padding-left:28px; }
+  .meta-row{ margin-bottom:22px; }
+  .meta-label{ font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:6px; }
+  .meta-val{ font-size:14.5px; color:var(--text); }
+  .meta-val a{ text-decoration:none; color:var(--text); border-bottom:1px dotted var(--border); }
+  .meta-val a:hover{ color:var(--cyan); border-color:var(--cyan); }
+
+  /* ---------- EXPERIENCE TIMELINE ---------- */
+  .timeline{ position:relative; }
+  .tl-item{
+    display:grid; grid-template-columns:150px 1fr; gap:24px;
+    padding:24px 0; border-top:1px solid var(--border-soft); position:relative;
+  }
+  .tl-item:first-child{ border-top:none; }
+  .tl-date{ font-family:var(--mono); font-size:12px; color:var(--text-dim); padding-top:3px; }
+  .tl-body h3{ font-size:17px; font-weight:600; color:var(--text); margin-bottom:2px; }
+  .tl-org{ font-family:var(--mono); font-size:12px; color:var(--amber); margin-bottom:10px; letter-spacing:0.02em; }
+  .tl-body ul{ list-style:none; }
+  .tl-body li{ font-size:14.5px; color:var(--text-muted); margin-bottom:7px; padding-left:16px; position:relative; }
+  .tl-body li::before{ content:'—'; position:absolute; left:0; color:var(--text-dim); }
+  @media (max-width:640px){ .tl-item{ grid-template-columns:1fr; gap:8px; } }
+
+  /* ---------- RESEARCH / PUBLICATIONS ---------- */
+  .spectrogram-wrap{
+    margin:0 0 34px; border:1px solid var(--border-soft); border-radius:6px;
+    overflow:hidden; background:var(--surface);
+  }
+  .spectrogram-wrap canvas{ width:100%; height:120px; display:block; }
+  .spec-caption{
+    font-family:var(--mono); font-size:10.5px; color:var(--text-dim);
+    padding:9px 16px; border-top:1px solid var(--border-soft); letter-spacing:0.05em;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;
+  }
+  .pub-list{ display:flex; flex-direction:column; gap:1px; background:var(--border-soft); }
+  .pub{
+    background:var(--surface); padding:24px 26px; display:grid;
+    grid-template-columns:auto 1fr auto; gap:20px; align-items:center;
+  }
+  .pub-idx{ font-family:var(--mono); color:var(--text-dim); font-size:13px; }
+  .pub-title{ font-size:15.5px; color:var(--text); font-weight:500; margin-bottom:5px; }
+  .pub-venue{ font-family:var(--mono); font-size:11.5px; color:var(--text-muted); }
+  .pub-link{
+    font-family:var(--mono); font-size:12px; color:var(--cyan); text-decoration:none;
+    border:1px solid rgba(79,216,235,0.25); padding:7px 13px; border-radius:4px; white-space:nowrap;
+  }
+  .pub-link:hover{ background:var(--cyan-dim); }
+  @media (max-width:640px){ .pub{ grid-template-columns:1fr; } .pub-idx{ display:none; } }
+
+  .award-row{ display:flex; gap:14px; margin-top:26px; flex-wrap:wrap; }
+  .award{
+    font-family:var(--mono); font-size:12px; color:var(--amber);
+    border:1px solid rgba(245,166,35,0.25); background:var(--amber-dim);
+    padding:8px 14px; border-radius:4px;
+  }
+
+  /* ---------- SKILLS ---------- */
+  .panel-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border-soft); }
+  @media (max-width:800px){ .panel-grid{ grid-template-columns:1fr; } }
+  .panel{ background:var(--surface); padding:26px; }
+  .panel-title{
+    font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.1em;
+    color:var(--text-dim); margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border-soft);
+    display:flex; align-items:center; gap:9px;
+  }
+  .panel-title svg{ width:15px; height:15px; flex-shrink:0; color:var(--amber); }
+  .panel-tags{ display:flex; flex-wrap:wrap; gap:8px; }
+  .tag{ font-family:var(--mono); font-size:12px; color:var(--text-muted); }
+  .tag::after{ content:'/'; margin-left:8px; color:var(--text-dim); }
+  .tag:last-child::after{ content:''; }
+
+  /* ---------- FREELANCE / CONTACT ---------- */
+  .cta-section{ border-top:1px solid var(--border-soft); }
+  .cta-box{
+    background:linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+    border:1px solid var(--border); border-radius:8px;
+    padding:48px; position:relative; overflow:hidden;
+  }
+  .cta-box::before{
+    content:''; position:absolute; top:-40%; right:-10%; width:400px; height:400px;
+    background:radial-gradient(circle, var(--amber-dim) 0%, transparent 70%); pointer-events:none;
+  }
+  .cta-flag{
+    display:inline-flex; align-items:center; gap:8px; font-family:var(--mono); font-size:11.5px;
+    color:#3ddc84; border:1px solid rgba(61,220,132,0.3); background:rgba(61,220,132,0.08);
+    padding:6px 12px; border-radius:20px; margin-bottom:20px;
+  }
+  .cta-flag .pulse{ width:6px;height:6px;border-radius:50%;background:#3ddc84; animation:pulse 2s ease-in-out infinite; }
+  .cta-box h2{ font-family:var(--mono); font-size:clamp(24px,4vw,34px); font-weight:600; max-width:20ch; margin-bottom:16px; }
+  .cta-box p{ color:var(--text-muted); max-width:58ch; margin-bottom:8px; font-size:15.5px; }
+  .freelance-list{ margin:22px 0 30px; display:grid; grid-template-columns:repeat(2,1fr); gap:10px 28px; }
+  @media (max-width:640px){ .freelance-list{ grid-template-columns:1fr; } }
+  .freelance-list li{ list-style:none; font-size:14.5px; color:var(--text-muted); padding-left:18px; position:relative; }
+  .freelance-list li::before{ content:'▹'; position:absolute; left:0; color:var(--amber); }
+
+  .contact-grid{ display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; }
+  .contact-card{
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--mono); font-size:13px; color:var(--text);
+    border:1px solid var(--border); padding:12px 16px; border-radius:5px;
+    text-decoration:none; transition:border-color .2s, color .2s;
+  }
+  .contact-card:hover{ border-color:var(--cyan); color:var(--cyan); }
+  .contact-card .ico{ color:var(--amber); }
+
+  footer{ padding:36px 0 60px; border-top:1px solid var(--border-soft); }
+  .foot-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+  .foot-note{ font-family:var(--mono); font-size:11.5px; color:var(--text-dim); }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="nav-mark"><span class="dot"></span> N.ARUTKEERTHI</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#research">Research</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-status"><span class="pulse"></span> Open to freelance</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- HERO -->
+  <section class="hero" style="border-top:none;">
+    <div class="starfield" id="starfield" aria-hidden="true"></div>
+    <div class="eyebrow">Applied ML &amp; Signal Systems</div>
+    <h1 class="title">Arutkeerthi <span class="last">Nagarajan</span></h1>
+    <p class="hero-tagline">
+      I build <strong>ML systems that survive contact with noisy, real-world signals</strong> —
+      from gravitational-wave strain data and radio-telescope antennas to ultrasonic NDT scans
+      and on-device LLM pipelines. Trained as a physicist at IIT Roorkee; now building agentic
+      and generative AI systems.
+    </p>
+
+    <div class="chirp-wrap" aria-hidden="true">
+      <svg id="chirpSvg" viewBox="0 0 1024 160" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="chirpGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#4fd8eb"/>
+            <stop offset="100%" stop-color="#f5a623"/>
+          </linearGradient>
+        </defs>
+        <line x1="0" y1="80" x2="1024" y2="80" stroke="#1a2030" stroke-width="1"/>
+        <path id="chirpPath" fill="none" stroke="url(#chirpGrad)" stroke-width="2"/>
+      </svg>
+    </div>
+    <div class="chirp-caption">
+      <span>LINEAR CHIRP TRANSFORM — GLITCH VETO WAVEFORM, f(t) = f₀ + kt</span>
+      <span>VALIDATED ON REAL LIGO SIGNALS · 96–97% PRECISION / RECALL</span>
+    </div>
+
+    <div class="hero-cta">
+      <a href="#experience" class="btn btn-primary">View my work</a>
+      <a href="#contact" class="btn btn-ghost">Get in touch</a>
+      <a href="https://github.com/Arut123" target="_blank" rel="noopener" class="btn btn-ghost">GitHub ↗</a>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <span class="sec-title">About</span>
+      <span class="sec-sub">IIT Roorkee · Integrated MSc Physics<br>2020–2025</span>
+    </div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          I started out doing <strong>physics, not software</strong> — chasing gravitational-wave
+          glitches through the Linear Chirp Transform, wiring log-periodic dipole antennas for
+          the SKA at Raman Research Institute, and tracking coronal mass ejections with LSTMs at
+          ARIES. That instrumentation-first, signal-first way of thinking is still how I approach
+          every ML problem: understand the noise before you trust the model.
+        </p>
+        <p>
+          Today that's evolved into building <strong>generative and agentic AI systems</strong> —
+          neural-operator surrogates for ultrasonic non-destructive testing at IIT Madras,
+          offline quantized LLM pipelines for enterprise document auditing, and statistical
+          fraud/AML models trained on millions of real banking transactions. I like problems
+          where the data is messy, the domain is unfamiliar, and the model has to actually hold
+          up in production.
+        </p>
+        <div class="interest-list">
+          <span class="chip">Scientific ML</span>
+          <span class="chip">Gravitational-wave Astronomy</span>
+          <span class="chip">Radio Astronomy</span>
+          <span class="chip">Agentic AI / LLM Pipelines</span>
+          <span class="chip">IoT &amp; Embedded Systems</span>
+          <span class="chip">Signal Processing</span>
+          <span class="chip">Inverse Problems</span>
+          <span class="chip">Edge / Quantized AI</span>
+        </div>
+      </div>
+      <div class="about-meta">
+        <div class="meta-row">
+          <div class="meta-label">Based in</div>
+          <div class="meta-val">Chennai, India</div>
+        </div>
+        <div class="meta-row">
+          <div class="meta-label">Currently</div>
+          <div class="meta-val">Project Associate, CNDE — IIT Madras</div>
+        </div>
+        <div class="meta-row">
+          <div class="meta-label">Education</div>
+          <div class="meta-val">Integrated MSc Physics, IIT Roorkee (CGPA 7.78)<br>Best MSc Thesis Award, Dept. of Physics</div>
+        </div>
+        <div class="meta-row">
+          <div class="meta-label">Contact</div>
+          <div class="meta-val"><a href="mailto:workarut2706@gmail.com">workarut2706@gmail.com</a></div>
+        </div>
+        <div class="meta-row">
+          <div class="meta-label">Elsewhere</div>
+          <div class="meta-val">
+            <a href="https://github.com/Arut123" target="_blank" rel="noopener">GitHub</a> ·
+            <a href="https://www.linkedin.com/in/arutkeerthi-n-3282b420b/" target="_blank" rel="noopener">LinkedIn</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <span class="sec-title">Experience <span class="muted">& Research Roles</span></span>
+    </div>
+    <div class="timeline">
+
+      <div class="tl-item">
+        <div class="tl-date">MAY 2026 — PRESENT</div>
+        <div class="tl-body">
+          <h3>Project Associate</h3>
+          <div class="tl-org">Centre for Non-Destructive Evaluation (CNDE), IIT Madras · Chennai</div>
+          <ul>
+            <li>Developing Neural Operator-based surrogate models for accelerated Full Waveform Inversion (FWI) in ultrasonic non-destructive testing.</li>
+            <li>Building agentic AI workflows to automate SPECFEM2D simulation, HPC dataset generation, and inversion pipelines for large-scale ultrasonic inspection studies.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">FEB 2026 — PRESENT</div>
+        <div class="tl-body">
+          <h3>AI Solutions Architect</h3>
+          <div class="tl-org">OneBitAI · Remote</div>
+          <ul>
+            <li>Founding team member driving Edge AI initiatives — deploying quantized LLMs for resource-constrained environments.</li>
+            <li>Built a fully offline, autonomous document auditing and report generation system for DGAQA using on-device LLMs (LLaMA, Mistral, BitNet variants).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">JUL 2025 — JAN 2026</div>
+        <div class="tl-body">
+          <h3>Business Analyst</h3>
+          <div class="tl-org">Sutra Management Consultancy · Noida</div>
+          <ul>
+            <li>Analyzed 1M+ transactions for a large Middle-East bank; found ~20–30% inefficiency in rule-based fraud detection and improved detection by 20% while cutting false positives 70%.</li>
+            <li>Built a statistical AML onboarding risk model from 6M+ STRs and 50+ KYC variables, improving high-risk customer identification by 35%.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">MAY 2024 — MAY 2025</div>
+        <div class="tl-body">
+          <h3>MITACS Globalink Research Fellow</h3>
+          <div class="tl-org">Western University · London, Ontario</div>
+          <ul>
+            <li>Designed a CNN pipeline using Linear Chirp Transform representations to classify gravitational-wave mergers vs. glitches in noisy LIGO time-series data.</li>
+            <li>Validated on real LIGO strain data, achieving 96–97% precision and recall; project evolved into MSc thesis at IIT Roorkee and an arXiv publication.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">DEC 2023 — JAN 2024</div>
+        <div class="tl-body">
+          <h3>Project Training Intern</h3>
+          <div class="tl-org">ISRO — Laboratory for Electro-Optics Systems (LEOS) · Bengaluru</div>
+          <ul>
+            <li>Worked with the MEMS division on atomic magnetometers, RF electronics, and precision laser systems.</li>
+            <li>Hands-on with MEMS fabrication, Deep Reactive Ion Etching (DRIE), and system-level testing of space-grade optoelectronics.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">MAY 2023 — JUL 2023</div>
+        <div class="tl-body">
+          <h3>Visiting Studentship</h3>
+          <div class="tl-org">Raman Research Institute · Bengaluru</div>
+          <ul>
+            <li>Led end-to-end deployment of broadband LPDA antenna systems for SKA-related radio astronomy surveys.</li>
+            <li>Configured a Red Pitaya FPGA platform as an SDR and built calibration + spectral-analysis pipelines.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">JUN 2022 — OCT 2023</div>
+        <div class="tl-body">
+          <h3>NIUS Research Fellow</h3>
+          <div class="tl-org">ARIES · Nainital</div>
+          <ul>
+            <li>Built RNN/LSTM-based pipelines for solar coronagraph image data, achieving 94% coronal mass ejection (CME) detection accuracy.</li>
+            <li>Explored applications as an early-warning system for strong CME events.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- RESEARCH / PUBLICATIONS -->
+  <section id="research">
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <span class="sec-title">Publications</span>
+    </div>
+    <div class="spectrogram-wrap" aria-hidden="true">
+      <canvas id="specCanvas" width="1024" height="140"></canvas>
+      <div class="spec-caption">
+        <span>TIME–FREQUENCY REPRESENTATION · CHIRP-BAND SIGNAL VS. NOISE — ILLUSTRATIVE</span>
+        <span>REAL-DATA VALIDATION · 96–97% PRECISION / RECALL</span>
+      </div>
+    </div>
+    <div class="pub-list">
+      <div class="pub">
+        <div class="pub-idx">01</div>
+        <div>
+          <div class="pub-title">Machine Learning–based Glitch Veto for Inspiral Binary Merger Signals Using Linear Chirp Transform</div>
+          <div class="pub-venue">arXiv · General Relativity &amp; Quantum Cosmology / Instrumentation &amp; Methods for Astrophysics · 2024</div>
+        </div>
+        <a class="pub-link" href="https://arxiv.org/abs/2410.20269" target="_blank" rel="noopener">Read paper ↗</a>
+      </div>
+      <div class="pub">
+        <div class="pub-idx">02</div>
+        <div>
+          <div class="pub-title">Two-Element Broadband Log-Periodic Dipole Antenna Radio Interferometry: Exploring the SKA Low-Frequency Band</div>
+          <div class="pub-venue">Astronomical Society of India Conference · Bangalore · 2024</div>
+        </div>
+        <a class="pub-link" href="https://ui.adsabs.harvard.edu/abs/2024asi..confP..01D/abstract" target="_blank" rel="noopener">Read abstract ↗</a>
+      </div>
+    </div>
+    <div class="award-row">
+      <span class="award">🏆 Best MSc Thesis Award — Dept. of Physics, IIT Roorkee</span>
+      <span class="award">🏆 Best Presentation Award — ICIST Conference</span>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <span class="sec-title">Toolkit</span>
+    </div>
+    <div class="panel-grid">
+      <div class="panel">
+        <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="6" r="2.4"/><circle cx="5" cy="18" r="2.4"/><circle cx="19" cy="18" r="2.4"/><path d="M12 8.4V13M12 13L6.6 16.2M12 13l5.4 3.2"/></svg> ML / AI</div>
+        <div class="panel-tags">
+          <span class="tag">Deep Learning</span>
+          <span class="tag">Generative &amp; Agentic AI</span>
+          <span class="tag">Neural Operators</span>
+          <span class="tag">CNN / RNN / LSTM</span>
+          <span class="tag">On-device / Quantized LLMs</span>
+          <span class="tag">TensorFlow</span>
+          <span class="tag">PyTorch</span>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 12h4l2-7 4 14 3-10 2 3h5"/></svg> Signals &amp; Instrumentation</div>
+        <div class="panel-tags">
+          <span class="tag">Time-Series Analysis</span>
+          <span class="tag">Statistical Modelling</span>
+          <span class="tag">RF Electronics</span>
+          <span class="tag">SDR (Red Pitaya)</span>
+          <span class="tag">SPECFEM2D</span>
+          <span class="tag">IoT / Embedded Systems</span>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="7" width="10" height="10" rx="1"/><path d="M10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4"/></svg> Engineering &amp; Tools</div>
+        <div class="panel-tags">
+          <span class="tag">Python</span>
+          <span class="tag">C++</span>
+          <span class="tag">Fortran</span>
+          <span class="tag">MATLAB</span>
+          <span class="tag">SQL</span>
+          <span class="tag">Linux / MPI</span>
+          <span class="tag">SAS</span>
+          <span class="tag">Tableau</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FREELANCE / CONTACT -->
+  <section class="cta-section" id="contact">
+    <div class="sec-head">
+      <span class="sec-num">05</span>
+      <span class="sec-title">Let's work together</span>
+    </div>
+    <div class="cta-box">
+      <div class="cta-flag"><span class="pulse"></span> AVAILABLE FOR FREELANCE &amp; CONTRACT WORK</div>
+      <h2>Have a signal to model, or a system to build?</h2>
+      <p>
+        I take on freelance and consulting work across applied ML, data pipelines, and
+        prototype builds — especially where the data is messy, physics-flavored, or
+        hardware-adjacent. Happy to jump on a short call to scope things out.
+      </p>
+      <ul class="freelance-list">
+        <li>ML / DL model development &amp; evaluation</li>
+        <li>Signal processing &amp; time-series pipelines</li>
+        <li>Generative &amp; agentic AI systems / LLM workflows</li>
+        <li>On-device &amp; edge AI deployment</li>
+        <li>IoT &amp; instrumentation prototyping</li>
+        <li>Data analysis, statistical modelling &amp; reporting</li>
+      </ul>
+      <div class="contact-grid">
+        <a class="contact-card" href="mailto:workarut2706@gmail.com"><span class="ico">✉</span> workarut2706@gmail.com</a>
+        <a class="contact-card" href="tel:+917358228653"><span class="ico">☎</span> +91 73582 28653</a>
+        <a class="contact-card" href="https://www.linkedin.com/in/arutkeerthi-n-3282b420b/" target="_blank" rel="noopener"><span class="ico">in</span> LinkedIn</a>
+        <a class="contact-card" href="https://github.com/Arut123" target="_blank" rel="noopener"><span class="ico">⌥</span> GitHub</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-row">
+    <span class="foot-note">© 2026 N. Arutkeerthi — Built with signal, noise, and a bit of physics.</span>
+    <span class="foot-note">Chennai, India</span>
+  </div>
+</footer>
+
+<script>
+  // Generate a chirp waveform path: frequency increases across the x-axis
+  (function(){
+    const svg = document.getElementById('chirpSvg');
+    const path = document.getElementById('chirpPath');
+    const W = 1024, H = 160, MID = 80, AMP = 46;
+    let d = '';
+    const N = 400;
+    for(let i=0;i<=N;i++){
+      const t = i / N;              // 0..1
+      const x = t * W;
+      const freq = 2 + t * 26;      // frequency sweep (chirp)
+      const damp = 1 - 0.15*Math.sin(t*Math.PI); // slight envelope variation
+      const y = MID + AMP * damp * Math.sin(freq * t * Math.PI * 2);
+      d += (i===0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+    }
+    path.setAttribute('d', d);
+
+    // draw-in animation
+    const len = path.getTotalLength ? path.getTotalLength() : 3000;
+    path.style.strokeDasharray = len;
+    path.style.strokeDashoffset = len;
+    path.style.transition = 'stroke-dashoffset 2.2s cubic-bezier(.16,.84,.44,1)';
+    requestAnimationFrame(()=> {
+      requestAnimationFrame(()=> { path.style.strokeDashoffset = '0'; });
+    });
+  })();
+
+  // Starfield background for hero
+  (function(){
+    const field = document.getElementById('starfield');
+    if(!field) return;
+    const COUNT = 70;
+    let html = '';
+    for(let i=0;i<COUNT;i++){
+      const top = Math.random()*100;
+      const left = Math.random()*100;
+      const size = Math.random()*1.6 + 1;
+      const dur = (Math.random()*4 + 2.5).toFixed(2);
+      const delay = (Math.random()*4).toFixed(2);
+      html += `<span class="star" style="top:${top}%;left:${left}%;width:${size}px;height:${size}px;animation-duration:${dur}s;animation-delay:${delay}s;"></span>`;
+    }
+    field.innerHTML = html;
+  })();
+
+  // Illustrative spectrogram: chirp track rising through a noise floor
+  (function(){
+    const canvas = document.getElementById('specCanvas');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const img = ctx.createImageData(W, H);
+
+    function colormap(v){
+      // v: 0..1 -> dark navy -> cyan -> amber -> pale
+      v = Math.max(0, Math.min(1, v));
+      const stops = [
+        [10,14,20],
+        [24,52,74],
+        [58,150,180],
+        [79,216,235],
+        [245,166,35],
+        [255,224,170]
+      ];
+      const seg = 1/(stops.length-1);
+      const idx = Math.min(stops.length-2, Math.floor(v/seg));
+      const t = (v - idx*seg)/seg;
+      const a = stops[idx], b = stops[idx+1];
+      return [
+        a[0]+(b[0]-a[0])*t,
+        a[1]+(b[1]-a[1])*t,
+        a[2]+(b[2]-a[2])*t
+      ];
+    }
+
+    for(let x=0; x<W; x++){
+      const t = x / W;
+      const chirpRow = H * (0.85 - 0.65 * t); // rising frequency track
+      for(let y=0; y<H; y++){
+        const noise = Math.random() * 0.16;
+        const dist = Math.abs(y - chirpRow);
+        const track = Math.exp(-(dist*dist) / (2 * 6 * 6)) * 0.95;
+        // occasional glitch blob
+        const glitch = (Math.sin(x*0.013 + y*0.11) > 0.997) ? 0.5 : 0;
+        const v = Math.min(1, noise + track + glitch);
+        const [r,g,b] = colormap(v);
+        const i = (y*W + x) * 4;
+        img.data[i] = r; img.data[i+1] = g; img.data[i+2] = b; img.data[i+3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+  })();
+</script>
+
+</body>
+</html>
